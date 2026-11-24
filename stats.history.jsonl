@@ -1,2 +1,3 @@
 {"generated": "2026-11-24T09:36:07Z", "collected": 1500, "round1_pass": 21, "round2_pass": 20, "published": 20, "proxies": {"ss": 11, "vmess": 5, "vless": 4}, "fastest_ms": 89}
 {"generated": "2026-11-24T09:50:58Z", "collected": 1500, "round1_pass": 43, "round2_pass": 38, "published": 38, "proxies": {"ss": 20, "vless": 10, "vmess": 7, "trojan": 1}, "fastest_ms": 36}
+{"generated": "2026-11-24T10:29:10Z", "collected": 1500, "round1_pass": 48, "round2_pass": 46, "published": 46, "proxies": {"vmess": 8, "ss": 27, "vless": 11}, "fastest_ms": 48}
