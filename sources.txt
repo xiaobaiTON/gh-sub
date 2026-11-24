@@ -1,0 +1,8 @@
+# 公共免费节点源，每行一个 URL（Base64 或明文订阅均可）
+https://raw.githubusercontent.com/zhuhaiuk/free-nodes/main/nodes.txt
+https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub
+https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt
+https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt
+https://raw.githubusercontent.com/mahdibland/V2RayAggregator/master/sub/sub_merge_base64.txt
+https://raw.githubusercontent.com/freenodess/freenodess/refs/heads/main/nodes/v2ray-base64.txt
+https://raw.githubusercontent.com/freefq/free/master/v2
