@@ -334,10 +334,13 @@ def proxy_lines(idx, n):
     else:
         net = e.get("type") or "tcp"
         sec = e.get("security") or "none"
-        uuid = n["link"].split("://", 1)[1].split("@", 1)[0]
-        lines += [f"    type: {p}", f"    server: {host}", f"    port: {port}",
-                  f"    uuid: {yq(uuid)}",
-                  f"    network: {net}", f"    tls: {'true' if sec != 'none' else 'false'}"]
+        user = n["link"].split("://", 1)[1].split("@", 1)[0]
+        lines += [f"    type: {p}", f"    server: {host}", f"    port: {port}"]
+        if p == "trojan":
+            lines.append(f"    password: {yq(user)}")
+        else:
+            lines.append(f"    uuid: {yq(user)}")
+        lines += [f"    network: {net}", f"    tls: {'true' if sec != 'none' else 'false'}"]
         if e.get("sni"):
             lines.append(f"    servername: {yq(e['sni'])}")
         lines.append(f"    client-fingerprint: {yq(e.get('fp') or 'chrome')}")
@@ -358,8 +361,12 @@ def proxy_lines(idx, n):
         if e.get("flow"):
             lines.append(f"    flow: {yq(e['flow'])}")
     text = "\n".join(lines)
-    for pat in (r"^\s+type:\s*\S+", r"^\s+server:\s*\S+", r"^\s+port:\s*\d+\s*$"):
+    for pat in (r"^\s+type:\s*\S+$", r"^\s+server:\s*\S+$", r"^\s+port:\s*\d+\s*$"):
         if not re.search(pat, text, re.M):
+            return None
+    for m in re.finditer(r"^\s+(uuid|password|cipher):\s*(.+)$", text, re.M):
+        v = m.group(2).strip()
+        if v in ('""', "''", "", "None", '"None"', "null"):
             return None
     if not re.search(r'^  - name: "[^"]+"$', lines[0]):
         return None
