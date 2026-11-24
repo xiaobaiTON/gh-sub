@@ -306,71 +306,133 @@ def sid_ok(s):
     return ""
 
 
+def proxy_lines(idx, n):
+    p, e, host, port = n["proto"], n["extra"], n["host"], n["port"]
+    if e.get("type") == "raw":
+        e["type"] = "tcp"
+    if e.get("net") == "raw":
+        e["net"] = "tcp"
+    name = f"{p.upper()}-{idx:02d}-{host[:28]}"
+    lines = [f"  - name: {yq(name)}"]
+    if p == "vmess":
+        net = e.get("net") or "tcp"
+        lines += [f"    type: vmess", f"    server: {host}", f"    port: {port}",
+                  f"    uuid: {yq(e.get('id'))}", f"    alterId: {int(e.get('aid', 0) or 0)}",
+                  f"    cipher: {yq(e.get('scy') or 'auto')}",
+                  f"    tls: {'true' if e.get('tls') else 'false'}"]
+        if e.get("sni"):
+            lines.append(f"    servername: {yq(e['sni'])}")
+        lines.append(f"    network: {net}")
+        if net == "ws":
+            lines += ["    ws-opts:", f"      path: {yq(e.get('path') or '/')}", "      headers:",
+                      f"        Host: {yq(e.get('host') or host)}"]
+        elif net == "grpc":
+            lines += ["    grpc-opts:", f"      grpc-service-name: {yq(e.get('path') or 'grpc')}"]
+    elif p == "ss":
+        lines += ["    type: ss", f"    server: {host}", f"    port: {port}",
+                  f"    cipher: {yq(e.get('method'))}", f"    password: {yq(e.get('password'))}", "    udp: true"]
+    else:
+        net = e.get("type") or "tcp"
+        sec = e.get("security") or "none"
+        uuid = n["link"].split("://", 1)[1].split("@", 1)[0]
+        lines += [f"    type: {p}", f"    server: {host}", f"    port: {port}",
+                  f"    uuid: {yq(uuid)}",
+                  f"    network: {net}", f"    tls: {'true' if sec != 'none' else 'false'}"]
+        if e.get("sni"):
+            lines.append(f"    servername: {yq(e['sni'])}")
+        lines.append(f"    client-fingerprint: {yq(e.get('fp') or 'chrome')}")
+        if sec == "reality" and e.get("pbk"):
+            lines += ["    reality-opts:", f"      public-key: {yq(e['pbk'])}"]
+            sid = sid_ok(e.get("sid"))
+            if sid:
+                lines.append(f"      short-id: {yq(sid)}")
+        if e.get("alpn"):
+            lines.append("    alpn:")
+            for a in e["alpn"].split(","):
+                lines.append(f"      - {yq(a)}")
+        if net == "ws":
+            lines += ["    ws-opts:", f"      path: {yq(e.get('path') or '/')}", "      headers:",
+                      f"        Host: {yq(e.get('host') or e.get('sni') or host)}"]
+        elif net == "grpc":
+            lines += ["    grpc-opts:", f"      grpc-service-name: {yq(e.get('serviceName') or 'grpc')}"]
+        if e.get("flow"):
+            lines.append(f"    flow: {yq(e['flow'])}")
+    text = "\n".join(lines)
+    for pat in (r"^\s+type:\s*\S+", r"^\s+server:\s*\S+", r"^\s+port:\s*\d+\s*$"):
+        if not re.search(pat, text, re.M):
+            return None
+    if not re.search(r'^  - name: "[^"]+"$', lines[0]):
+        return None
+    for m in re.finditer(r"^\s+short-id:\s*(.+)$", text, re.M):
+        v = m.group(1).strip().strip('"')
+        if not (re.fullmatch(r"[0-9a-f]{2,16}", v) and len(v) % 2 == 0):
+            return None
+    return name, lines
+
+
 def clash_yaml(nodes):
     lines = ["mixed-port: 7890", "allow-lan: false", "mode: rule", "log-level: info", "proxies:"]
     names = []
     for i, n in enumerate(nodes, 1):
-        p, e, host, port = n["proto"], n["extra"], n["host"], n["port"]
-        if e.get("type") == "raw":
-            e["type"] = "tcp"
-        if e.get("net") == "raw":
-            e["net"] = "tcp"
-        name = f"{p.upper()}-{i:02d}-{host[:28]}"
+        made = proxy_lines(i, n)
+        if not made:
+            continue
+        name, body = made
         names.append(name)
-        lines.append(f"  - name: {yq(name)}")
-        if p == "vmess":
-            net = e.get("net") or "tcp"
-            lines += [f"    type: vmess", f"    server: {host}", f"    port: {port}",
-                      f"    uuid: {yq(e.get('id'))}", f"    alterId: {int(e.get('aid', 0) or 0)}",
-                      f"    cipher: {e.get('scy') or 'auto'}",
-                      f"    tls: {'true' if e.get('tls') else 'false'}"]
-            if e.get("sni"):
-                lines.append(f"    servername: {yq(e['sni'])}")
-            lines.append(f"    network: {net}")
-            if net == "ws":
-                lines += ["    ws-opts:", f"      path: {yq(e.get('path') or '/')}", "      headers:",
-                          f"        Host: {yq(e.get('host') or host)}"]
-            elif net == "grpc":
-                lines += ["    grpc-opts:", f"      grpc-service-name: {yq(e.get('path') or 'grpc')}"]
-        elif p == "ss":
-            lines += ["    type: ss", f"    server: {host}", f"    port: {port}",
-                      f"    cipher: {yq(e.get('method'))}", f"    password: {yq(e.get('password'))}", "    udp: true"]
-        else:
-            net = e.get("type") or "tcp"
-            sec = e.get("security") or "none"
-            lines += [f"    type: {p}", f"    server: {host}", f"    port: {port}",
-                      f"    uuid: {yq(n['link'].split('://', 1)[1].split('@', 1)[0])}",
-                      f"    network: {net}", f"    tls: {'true' if sec != 'none' else 'false'}"]
-            if e.get("sni"):
-                lines.append(f"    servername: {yq(e['sni'])}")
-            lines.append(f"    client-fingerprint: {e.get('fp') or 'chrome'}")
-            if sec == "reality" and e.get("pbk"):
-                lines += ["    reality-opts:", f"      public-key: {yq(e['pbk'])}"]
-                sid = sid_ok(e.get("sid"))
-                if sid:
-                    lines.append(f"      short-id: {yq(sid)}")
-            if e.get("alpn"):
-                lines.append("    alpn:")
-                for a in e["alpn"].split(","):
-                    lines.append(f"      - {yq(a)}")
-            if net == "ws":
-                lines += ["    ws-opts:", f"      path: {yq(e.get('path') or '/')}", "      headers:",
-                          f"        Host: {yq(e.get('host') or e.get('sni') or host)}"]
-            elif net == "grpc":
-                lines += ["    grpc-opts:", f"      grpc-service-name: {yq(e.get('serviceName') or 'grpc')}"]
-            if e.get("flow"):
-                lines.append(f"    flow: {yq(e['flow'])}")
+        lines.extend(body)
+    pool = names or []
     lines += ["proxy-groups:", '  - name: "AUTO"', "    type: url-test",
               '    url: "https://www.gstatic.com/generate_204"', "    interval: 300", "    tolerance: 50",
               "    proxies:"]
-    lines += [f"      - {yq(x)}" for x in names]
-    head = names[:5] or ["DIRECT"]
+    lines += [f"      - {yq(x)}" for x in pool] or ['      - "DIRECT"']
+    head = pool[:5] or ["DIRECT"]
     lines += ['  - name: "FALLBACK"', "    type: fallback",
               '    url: "https://www.gstatic.com/generate_204"', "    interval: 300", "    proxies:",
               '      - "AUTO"']
     lines += [f"      - {yq(x)}" for x in head]
     lines += ["rules:", "  - MATCH,FALLBACK"]
     return "\n".join(lines) + "\n"
+
+def write_chart(path, rows):
+    if not rows:
+        return
+    W, H, PL, PR, PT, PB = 460, 200, 44, 14, 18, 34
+    n = len(rows)
+    series = [("round1_pass", "#d9973a", "round1"), ("round2_pass", "#7aa2c8", "round2"),
+              ("published", "#3f9f6a", "published")]
+    vals = [r.get(k) for r in rows for k, _, _ in series if isinstance(r.get(k), (int, float))]
+    ymax = max(vals + [1])
+    ymax = int(ymax * 1.15) or 1
+
+    def x(i):
+        return PL + (0 if n == 1 else i * (W - PL - PR) / (n - 1))
+
+    def y(v):
+        return H - PB - (v / ymax) * (H - PT - PB)
+
+    out = ['<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">' % (W, H, W, H),
+           '<rect width="100%" height="100%" fill="#0f1419"/>']
+    for g in range(5):
+        v = ymax * g / 4
+        yy = y(v)
+        out.append('<line x1="%d" y1="%.1f" x2="%d" y2="%.1f" stroke="#2a3038" stroke-width="1"/>' % (PL, yy, W - PR, yy))
+        out.append('<text x="%d" y="%.1f" fill="#8a939f" font-size="9" text-anchor="end">%d</text>' % (PL - 6, yy + 3.5, int(v)))
+    for k, color, label in series:
+        pts = [(x(i), y(r[k])) for i, r in enumerate(rows) if isinstance(r.get(k), (int, float))]
+        if not pts:
+            continue
+        d = " ".join("%.1f,%.1f" % pt for pt in pts)
+        out.append('<polyline points="%s" fill="none" stroke="%s" stroke-width="2"/>' % (d, color))
+        for px, py in pts:
+            out.append('<circle cx="%.1f" cy="%.1f" r="2.5" fill="%s"/>' % (px, py, color))
+    lx = PL
+    for k, color, label in series:
+        out.append('<rect x="%d" y="6" width="8" height="8" fill="%s"/>' % (lx, color))
+        out.append('<text x="%d" y="13" fill="#c7cdd4" font-size="9">%s</text>' % (lx + 11, label))
+        lx += 82
+    out.append("</svg>")
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(out) + "\n")
 
 
 def load_nodes(path):
@@ -390,12 +452,15 @@ def main():
     ap.add_argument("--limit", type=int, default=1500)
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--batch", type=int, default=20)
-    ap.add_argument("--keep", type=int, default=150)
+    ap.add_argument("--keep", type=int, default=40)
+    ap.add_argument("--rounds", type=int, default=3)
+    ap.add_argument("--max-latency", type=int, default=2000)
     ap.add_argument("--xray", default=os.environ.get("XRAY_BIN", os.path.join("xray", "xray.exe" if os.name == "nt" else "xray")))
     ap.add_argument("--extra-sources", action="store_true")
     ap.add_argument("--out", default=".")
     args = ap.parse_args()
     args.batch = max(1, args.batch)
+    args.rounds = max(1, min(4, args.rounds))
     args.workers = max(1, args.workers)
 
     if not os.path.exists(args.xray):
@@ -472,6 +537,7 @@ def main():
     t0 = time.time()
     targets_a = (("www.gstatic.com", 80), ("cp.cloudflare.com", 80))
     targets_b = (("cp.cloudflare.com", 80), ("www.gstatic.com", 80))
+    targets_c = (("connectivitycheck.gstatic.com", 80), ("cp.cloudflare.com", 80))
     first = run_round(nodes, targets_a)
     print(f"round1 pass={len(first)} time={time.time()-t0:.0f}s")
 
@@ -479,9 +545,23 @@ def main():
     second = run_round([n for n, _ in first], targets_b)
     print(f"round2 pass={len(second)} time={time.time()-t1:.0f}s")
 
-    second.sort(key=lambda x: x[1])
-    result = second[: args.keep]
+    third = second
+    if args.rounds >= 3 and second:
+        t2 = time.time()
+        third = run_round([n for n, _ in second], targets_c)
+        print(f"round3 pass={len(third)} time={time.time()-t2:.0f}s")
+
+    if args.max_latency > 0:
+        before = len(third)
+        third = [(n, l) for n, l in third if l * 1000 <= args.max_latency]
+        print(f"latency<={args.max_latency}ms: {before} -> {len(third)}")
+
+    third.sort(key=lambda x: x[1])
+    result = third[: args.keep]
     print(f"kept={len(result)}")
+    if not result:
+        print("no node passed this round; previous outputs left untouched", file=sys.stderr)
+        sys.exit(1)
 
     out = args.out
     os.makedirs(out, exist_ok=True)
@@ -498,6 +578,7 @@ def main():
         "collected": len(nodes),
         "round1_pass": len(first),
         "round2_pass": len(second),
+        "round3_pass": len(third),
         "published": len(result),
         "proxies": {},
         "fastest_ms": round(result[0][1] * 1000) if result else None,
@@ -506,8 +587,19 @@ def main():
         stats["proxies"][n["proto"]] = stats["proxies"].get(n["proto"], 0) + 1
     with open(os.path.join(out, "stats.json"), "w", encoding="utf-8") as f:
         json.dump(stats, f, indent=2, ensure_ascii=False)
-    with open(os.path.join(out, "stats.history.jsonl"), "a", encoding="utf-8", newline="\n") as f:
+    hist_path = os.path.join(out, "stats.history.jsonl")
+    with open(hist_path, "a", encoding="utf-8", newline="\n") as f:
         f.write(json.dumps(stats, ensure_ascii=False) + "\n")
+    rows = []
+    for line in open(hist_path, encoding="utf-8"):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rows.append(json.loads(line))
+        except Exception:
+            pass
+    write_chart(os.path.join(out, "chart.svg"), rows)
     print(json.dumps(stats, indent=2, ensure_ascii=False))
 
 

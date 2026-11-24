@@ -23,7 +23,7 @@
 discover.py       GitHub 仓库发现 → sources.auto.txt
 discover_web.py   Telegram / 搜索 / 聚合站 / X / Google → links.web.txt + sources.web.txt
 scan.py           sources.txt + sources.auto.txt + sources.web.txt + links.web.txt + verified.txt
-                  每个节点起独立 Xray，SOCKS5 → HTTP 204 两轮实测 → 排序 → 输出
+                  每个节点起独立 Xray，SOCKS5 → HTTP 204 三轮实测 → 延迟阈值 → 排序 → 输出
 Actions           每 6 小时跑一轮，提交到 main
 ```
 
@@ -35,7 +35,8 @@ Actions           每 6 小时跑一轮，提交到 main
 | `nodes.txt` | 明文 URI |
 | `clash.yaml` | Clash / Mihomo 配置，含 `AUTO` url-test 组 |
 | `stats.history.jsonl` | 每轮追加一行的历史统计 |
-| `stats.json` | 采集数、两轮通过数、协议分布、最快延迟 |
+| `chart.svg` | 每轮 round1 / round2 / published 折线图 |
+| `stats.json` | 采集数、三轮通过数、协议分布、最快延迟 |
 | `sources.txt` | 固定订阅源 |
 | `sources.auto.txt` | GitHub 自动发现源 |
 | `sources.web.txt` | Telegram / 搜索 / 聚合站发现的可疑订阅 |
@@ -46,9 +47,11 @@ Actions           每 6 小时跑一轮，提交到 main
 
 1. 每个节点生成独立 Xray 配置，监听本地 SOCKS5 端口；
 2. SOCKS5 CONNECT `www.gstatic.com:80` → `GET /generate_204` 必须 204；
-3. 同一节点再对 `cp.cloudflare.com:80` 复测，两次都过才保留；
-4. 按耗时升序，截断到 `--keep`；
-5. 输出 Base64、明文、Clash YAML、统计 JSON。
+3. 第二轮对 `cp.cloudflare.com:80` 复测；
+4. 第三轮对 `connectivitycheck.gstatic.com:80` + `cp.cloudflare.com:80` 复测，三次都过才保留；
+5. 延迟高于 `--max-latency` 的丢弃，按耗时升序截断到 `--keep`；
+6. 逐节点校验：必填字段、`short-id` hex 偶数长度 ≤16 且必须带引号；
+7. 输出 Base64、明文、Clash YAML、统计 JSON、`chart.svg`。
 
 支持 `vless`（tcp/ws/grpc，tls/reality）、`vmess`、`trojan`、`shadowsocks`。Hysteria2/TUIC 需要额外客户端，未纳入自动检测。
 
@@ -68,7 +71,9 @@ python scan.py --limit 300 --workers 16 --keep 80 --xray E:\墙\xray\xray.exe
 - `--limit` 每轮测试上限（默认 1500；`verified.txt` 不占名额）
 - `--workers` 同时运行的 Xray 批次数（默认 8）
 - `--batch` 每个 Xray 进程内的节点数，多 SOCKS 入站按 inboundTag 路由（默认 20）
-- `--keep` 发布上限（默认 150）
+- `--keep` 发布上限（默认 40）
+- `--rounds` 复测轮数（默认 3，可设 2）
+- `--max-latency` 延迟阈值毫秒（默认 2000，0 表示不过滤）
 - `--sources` 固定源文件，默认 `sources.txt`
 - `--extra-sources` 额外抓取 `sources.web.txt` 里的可疑订阅（默认关闭）
 - `--out` 输出目录，默认当前目录
@@ -135,6 +140,7 @@ https://cdn.jsdelivr.net/gh/xiaobaiTON/gh-sub@main/clash.yaml
 | --- | --- | --- | --- | --- | --- | --- |
 | #5 | 1500 | 21 | 20 | 20 | 89 ms | workers 8 / batch 20 / 单节点起进程 |
 | #6 | 1500 | 43 | 38 | 38 | 36 ms | workers 6 / batch 10 / SOCKS 批路由 |
+| #7 | 1500 | 48 | 46 | 46 | 48 ms | 同 #6 + short-id 修复 |
 
 一轮通过率翻倍、最快延迟降 60%，来自三点：
 
@@ -162,4 +168,15 @@ https://cdn.jsdelivr.net/gh/xiaobaiTON/gh-sub@main/clash.yaml
 - 把 `--keep` 降到 30-50，提高平均质量；
 - 发布前在 CI 里跑一次 `mihomo -t`，坏配置直接 fail，不让它上线；
 - 用 `stats.history.jsonl` 画每轮通过率曲线。
+
+## 零打扰更新
+
+配好 `GITHUB_TOKEN` 后，改文件不需要开浏览器：
+
+```bash
+set GITHUB_TOKEN=ghp_xxx
+python tools/push.py --repo xiaobaiTON/gh-sub --branch main --message "tune scan" scan.py README.md .github/workflows/scan.yml
+```
+
+token 用 fine-grained PAT，仓库只选 `gh-sub`，权限只勾 **Contents: Read and write**。脚本对每个路径先取 sha 再 PUT，新增和覆盖都走同一条命令。
 
