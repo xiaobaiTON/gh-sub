@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="200" viewBox="0 0 460 200">
+<rect width="100%" height="100%" fill="#0f1419"/>
+<line x1="44" y1="166.0" x2="446" y2="166.0" stroke="#2a3038" stroke-width="1"/>
+<text x="38" y="169.5" fill="#8a939f" font-size="9" text-anchor="end">0</text>
+<line x1="44" y1="129.0" x2="446" y2="129.0" stroke="#2a3038" stroke-width="1"/>
+<text x="38" y="132.5" fill="#8a939f" font-size="9" text-anchor="end">14</text>
+<line x1="44" y1="92.0" x2="446" y2="92.0" stroke="#2a3038" stroke-width="1"/>
+<text x="38" y="95.5" fill="#8a939f" font-size="9" text-anchor="end">28</text>
+<line x1="44" y1="55.0" x2="446" y2="55.0" stroke="#2a3038" stroke-width="1"/>
+<text x="38" y="58.5" fill="#8a939f" font-size="9" text-anchor="end">42</text>
+<line x1="44" y1="18.0" x2="446" y2="18.0" stroke="#2a3038" stroke-width="1"/>
+<text x="38" y="21.5" fill="#8a939f" font-size="9" text-anchor="end">57</text>
+<polyline points="44.0,111.5 144.5,54.4 245.0,41.4 345.5,36.2 446.0,36.2" fill="none" stroke="#d9973a" stroke-width="2"/>
+<circle cx="44.0" cy="111.5" r="2.5" fill="#d9973a"/>
+<circle cx="144.5" cy="54.4" r="2.5" fill="#d9973a"/>
+<circle cx="245.0" cy="41.4" r="2.5" fill="#d9973a"/>
+<circle cx="345.5" cy="36.2" r="2.5" fill="#d9973a"/>
+<circle cx="446.0" cy="36.2" r="2.5" fill="#d9973a"/>
+<polyline points="44.0,114.1 144.5,67.3 245.0,46.6 345.5,49.2 446.0,46.6" fill="none" stroke="#7aa2c8" stroke-width="2"/>
+<circle cx="44.0" cy="114.1" r="2.5" fill="#7aa2c8"/>
+<circle cx="144.5" cy="67.3" r="2.5" fill="#7aa2c8"/>
+<circle cx="245.0" cy="46.6" r="2.5" fill="#7aa2c8"/>
+<circle cx="345.5" cy="49.2" r="2.5" fill="#7aa2c8"/>
+<circle cx="446.0" cy="46.6" r="2.5" fill="#7aa2c8"/>
+<polyline points="44.0,114.1 144.5,67.3 245.0,46.6 345.5,49.2 446.0,62.1" fill="none" stroke="#3f9f6a" stroke-width="2"/>
+<circle cx="44.0" cy="114.1" r="2.5" fill="#3f9f6a"/>
+<circle cx="144.5" cy="67.3" r="2.5" fill="#3f9f6a"/>
+<circle cx="245.0" cy="46.6" r="2.5" fill="#3f9f6a"/>
+<circle cx="345.5" cy="49.2" r="2.5" fill="#3f9f6a"/>
+<circle cx="446.0" cy="62.1" r="2.5" fill="#3f9f6a"/>
+<rect x="44" y="6" width="8" height="8" fill="#d9973a"/>
+<text x="55" y="13" fill="#c7cdd4" font-size="9">round1</text>
+<rect x="126" y="6" width="8" height="8" fill="#7aa2c8"/>
+<text x="137" y="13" fill="#c7cdd4" font-size="9">round2</text>
+<rect x="208" y="6" width="8" height="8" fill="#3f9f6a"/>
+<text x="219" y="13" fill="#c7cdd4" font-size="9">published</text>
+</svg>
