@@ -220,7 +220,7 @@ def socks_probe(socks_port, target, target_port=80, timeout=7.0):
             pass
 
 
-def probe_all(port, targets, budget=6.0):
+def probe_all(port, targets, budget=8.0):
     end = time.time() + budget
     best = None
     for target in targets:
@@ -234,7 +234,7 @@ def probe_all(port, targets, budget=6.0):
     return best
 
 
-def wait_ports(ports, timeout=12.0):
+def wait_ports(ports, timeout=15.0):
     pending = set(ports)
     deadline = time.time() + timeout
     while pending and time.time() < deadline:
