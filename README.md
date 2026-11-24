@@ -1,5 +1,7 @@
 # proxy-sub
 
+![scan](https://github.com/xiaobaiTON/gh-sub/actions/workflows/scan.yml/badge.svg)
+
 全自动代理筛选订阅：多来源发现 → 抓取 → Xray 逐节点真连通性检测 → 两轮复测 → 按延迟排序 → 发布订阅。
 
 ## 来源覆盖
@@ -77,7 +79,7 @@ cd gh-sub
 git init -b main
 git add .
 git commit -m "init proxy-sub"
-git remote add origin https://github.com/<USER>/<REPO>.git
+git remote add origin https://github.com/xiaobaiTON/gh-sub.git
 git push -u origin main
 ```
 
@@ -100,10 +102,10 @@ GOOGLE_CX        Google 自定义搜索引擎 ID
 ## 订阅地址
 
 ```
-https://raw.githubusercontent.com/<USER>/<REPO>/main/sub.txt
-https://raw.githubusercontent.com/<USER>/<REPO>/main/clash.yaml
-https://cdn.jsdelivr.net/gh/<USER>/<REPO>@main/sub.txt
-https://cdn.jsdelivr.net/gh/<USER>/<REPO>@main/clash.yaml
+https://raw.githubusercontent.com/xiaobaiTON/gh-sub/main/sub.txt
+https://raw.githubusercontent.com/xiaobaiTON/gh-sub/main/clash.yaml
+https://cdn.jsdelivr.net/gh/xiaobaiTON/gh-sub@main/sub.txt
+https://cdn.jsdelivr.net/gh/xiaobaiTON/gh-sub@main/clash.yaml
 ```
 
 客户端用 `AUTO` / `url-test` 自动选最快线路。
