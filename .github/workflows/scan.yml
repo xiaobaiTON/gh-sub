@@ -56,12 +56,12 @@ jobs:
       - name: Scan and filter
         env:
           XRAY_BIN: xray/xray
-        run: python scan.py --sources sources.txt --limit 1500 --workers 32 --keep 200 --out .
+        run: python scan.py --sources sources.txt --limit 1500 --workers 10 --batch 20 --keep 150 --out .
 
       - name: Commit results
         run: |
           git config user.name "proxy-sub-bot"
           git config user.email "proxy-sub-bot@users.noreply.github.com"
-          git add nodes.txt sub.txt clash.yaml stats.json sources.auto.txt links.web.txt sources.web.txt
+          git add -A
           git diff --cached --quiet || git commit -m "update $(date -u +%Y-%m-%dT%H:%MZ)"
           git push || true
