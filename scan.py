@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Aggregate public proxy sources, test them through Xray, publish a clean subscription."""
-import argparse, base64, itertools, json, os, random, re, socket, ssl, subprocess, sys, tempfile, threading, time
+import argparse, base64, itertools, json, os, random, re, socket, subprocess, sys, tempfile, threading, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.parse import unquote
 from urllib.request import Request, urlopen
@@ -94,6 +94,14 @@ def parse_node(link):
     if re.match(r"^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|0\.|localhost$)", host):
         return None
     return {"proto": scheme, "host": host, "port": port, "link": link, "extra": extra}
+
+
+def node_key(node):
+    e = node["extra"]
+    ident = e.get("uuid") or e.get("id") or e.get("password") or e.get("method") or ""
+    return f"{node['proto']}|{node['host']}|{node['port']}|{ident}"
+
+
 def build_config(node, socks_port):
     p, e = node["proto"], node["extra"]
     host, port = node["host"], node["port"]
@@ -145,8 +153,29 @@ def build_config(node, socks_port):
                           "settings": {"udp": False}}],
             "outbounds": [out]}
 
+
+def build_batch_config(nodes, ports):
+    inbounds, outbounds, rules = [], [], []
+    for i, (n, port) in enumerate(zip(nodes, ports)):
+        cfg = build_config(n, port)
+        if cfg is None:
+            return None
+        ib = cfg["inbounds"][0]
+        ib["tag"] = f"in{i}"
+        ob = cfg["outbounds"][0]
+        ob["tag"] = f"out{i}"
+        inbounds.append(ib)
+        outbounds.append(ob)
+        rules.append({"type": "field", "inboundTag": [f"in{i}"], "outboundTag": f"out{i}"})
+    if not inbounds:
+        return None
+    return {"log": {"loglevel": "error"}, "inbounds": inbounds, "outbounds": outbounds,
+            "routing": {"domainStrategy": "AsIs", "rules": rules}}
+
+
 def socks_probe(socks_port, target, target_port=80, timeout=7.0):
     start = time.time()
+    end = start + timeout
     s = socket.create_connection(("127.0.0.1", socks_port), timeout=3)
     s.settimeout(timeout)
     try:
@@ -164,6 +193,8 @@ def socks_probe(socks_port, target, target_port=80, timeout=7.0):
         need = extra + 2
         got = b""
         while len(got) < need:
+            if time.time() > end:
+                return None
             chunk = s.recv(need - len(got))
             if not chunk:
                 return None
@@ -171,6 +202,8 @@ def socks_probe(socks_port, target, target_port=80, timeout=7.0):
         s.sendall(f"GET /generate_204 HTTP/1.1\r\nHost: {target}\r\nConnection: close\r\n\r\n".encode())
         data = b""
         while b"\r\n" not in data:
+            if time.time() > end:
+                return None
             chunk = s.recv(512)
             if not chunk:
                 return None
@@ -187,34 +220,68 @@ def socks_probe(socks_port, target, target_port=80, timeout=7.0):
             pass
 
 
-def test_one(node, socks_port, xray_bin, targets):
-    cfg = build_config(node, socks_port)
+def probe_all(port, targets, budget=6.0):
+    end = time.time() + budget
+    best = None
+    for target in targets:
+        left = end - time.time()
+        if left <= 0.5:
+            return None
+        lat = socks_probe(port, target[0], target[1], timeout=min(7.0, left))
+        if lat is None:
+            return None
+        best = lat if best is None else min(best, lat)
+    return best
+
+
+def wait_ports(ports, timeout=12.0):
+    pending = set(ports)
+    deadline = time.time() + timeout
+    while pending and time.time() < deadline:
+        for p in list(pending):
+            try:
+                s = socket.create_connection(("127.0.0.1", p), timeout=0.2)
+                s.close()
+                pending.discard(p)
+            except Exception:
+                pass
+        if pending:
+            time.sleep(0.05)
+    return pending
+
+
+def test_batch(nodes, ports, xray_bin, targets):
+    cfg = build_batch_config(nodes, ports)
     if cfg is None:
-        return None
+        return []
     fd, path = tempfile.mkstemp(suffix=".json")
     os.close(fd)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(cfg, f)
-    flags = 0
-    if os.name == "nt":
-        flags = subprocess.CREATE_NO_WINDOW
+    flags = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
     proc = subprocess.Popen([xray_bin, "-c", path], stdout=subprocess.DEVNULL,
                             stderr=subprocess.DEVNULL, creationflags=flags)
     try:
-        time.sleep(0.5)
-        if proc.poll() is not None:
-            return None
-        best = None
-        for t in targets:
-            lat = socks_probe(socks_port, t[0], t[1])
-            if lat is None:
-                return None
-            best = lat if best is None else min(best, lat)
-        return best
+        missing = wait_ports(ports)
+        live = [(n, p) for n, p in zip(nodes, ports) if p not in missing]
+        if not live:
+            return []
+        found = {}
+        with ThreadPoolExecutor(max_workers=len(live)) as ex:
+            futs = {ex.submit(probe_all, p, targets): n for n, p in live}
+            for fut in as_completed(futs):
+                node = futs[fut]
+                try:
+                    lat = fut.result()
+                except Exception:
+                    lat = None
+                if lat is not None:
+                    found[id(node)] = lat
+        return [(n, found[id(n)]) for n in nodes if id(n) in found]
     finally:
         try:
             proc.terminate()
-            proc.wait(timeout=2)
+            proc.wait(timeout=3)
         except Exception:
             try:
                 proc.kill()
@@ -224,6 +291,7 @@ def test_one(node, socks_port, xray_bin, targets):
             os.unlink(path)
         except Exception:
             pass
+
 
 def yq(s):
     return json.dumps(str(s), ensure_ascii=False)
@@ -282,66 +350,76 @@ def clash_yaml(nodes):
               '    url: "https://www.gstatic.com/generate_204"', "    interval: 300", "    tolerance: 50",
               "    proxies:"]
     lines += [f"      - {yq(x)}" for x in names]
-    lines += ["rules:", "  - MATCH,AUTO"]
+    head = names[:5] or ["DIRECT"]
+    lines += ['  - name: "FALLBACK"', "    type: fallback",
+              '    url: "https://www.gstatic.com/generate_204"', "    interval: 300", "    proxies:",
+              '      - "AUTO"']
+    lines += [f"      - {yq(x)}" for x in head]
+    lines += ["rules:", "  - MATCH,FALLBACK"]
     return "\n".join(lines) + "\n"
+
+
+def load_nodes(path):
+    out = []
+    if not os.path.exists(path):
+        return out
+    for line in open(path, encoding="utf-8-sig"):
+        n = parse_node(line)
+        if n:
+            out.append(n)
+    return out
+
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--sources", default="sources.txt")
     ap.add_argument("--limit", type=int, default=1500)
-    ap.add_argument("--workers", type=int, default=24)
-    ap.add_argument("--keep", type=int, default=200)
+    ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--batch", type=int, default=20)
+    ap.add_argument("--keep", type=int, default=150)
     ap.add_argument("--xray", default=os.environ.get("XRAY_BIN", os.path.join("xray", "xray.exe" if os.name == "nt" else "xray")))
+    ap.add_argument("--extra-sources", action="store_true")
     ap.add_argument("--out", default=".")
     args = ap.parse_args()
+    args.batch = max(1, args.batch)
+    args.workers = max(1, args.workers)
 
     if not os.path.exists(args.xray):
         sys.exit(f"xray not found: {args.xray}")
 
-    verified, raw_nodes, web_nodes = [], [], []
-    if os.path.exists("verified.txt"):
-        for line in open("verified.txt", encoding="utf-8"):
-            n = parse_node(line)
-            if n:
-                verified.append(n)
-    if os.path.exists("links.web.txt"):
-        for line in open("links.web.txt", encoding="utf-8"):
-            n = parse_node(line)
-            if n:
-                web_nodes.append(n)
+    verified = load_nodes("verified.txt")
+    web_nodes = load_nodes("links.web.txt")
 
+    raw_nodes = []
     source_files = [args.sources]
     if os.path.exists("sources.auto.txt"):
         source_files.append("sources.auto.txt")
+    if args.extra_sources and os.path.exists("sources.web.txt"):
+        source_files.append("sources.web.txt")
     for sf in source_files:
-        for line in open(sf, encoding="utf-8"):
+        for line in open(sf, encoding="utf-8-sig"):
             url = line.strip()
             if not url or url.startswith("#"):
                 continue
-            for link in fetch(url).splitlines():
-                n = parse_node(link)
-                if n:
-                    raw_nodes.append(n)
+            raw_nodes.extend(load_nodes_from_text(fetch(url)))
 
-    seen, nodes, keep = set(), [], []
+    seen, keep, web_pool, pool = set(), [], [], []
     for n in verified:
-        key = f"{n['host']}:{n['port']}"
-        if key not in seen:
-            seen.add(key)
+        k = node_key(n)
+        if k not in seen:
+            seen.add(k)
             keep.append(n)
-    web_pool = []
     for n in web_nodes:
-        key = f"{n['host']}:{n['port']}"
-        if key in seen:
+        k = node_key(n)
+        if k in seen:
             continue
-        seen.add(key)
+        seen.add(k)
         web_pool.append(n)
-    pool = []
     for n in raw_nodes:
-        key = f"{n['host']}:{n['port']}"
-        if key in seen:
+        k = node_key(n)
+        if k in seen:
             continue
-        seen.add(key)
+        seen.add(k)
         pool.append(n)
     print(f"collected={len(pool) + len(web_pool) + len(keep)} verified={len(keep)} web={len(web_pool)}")
     if args.limit:
@@ -355,45 +433,41 @@ def main():
     else:
         keep += web_pool + pool
     nodes = keep
-    print(f"testing={len(nodes)}")
+    print(f"testing={len(nodes)} batch={args.batch} workers={args.workers}")
 
     counter = itertools.count(20000)
     lock = threading.Lock()
 
-    def job(node, targets):
+    def take_ports(k):
         with lock:
-            port = next(counter)
-        return node, test_one(node, port, args.xray, targets)
+            return [next(counter) for _ in range(k)]
+
+    def run_round(items, targets):
+        batches = [items[i:i + args.batch] for i in range(0, len(items), args.batch)]
+        passed, total = [], len(items)
+        with ThreadPoolExecutor(max_workers=args.workers) as ex:
+            futs = {ex.submit(test_batch, b, take_ports(len(b)), args.xray, targets): len(b) for b in batches}
+            for i, fut in enumerate(as_completed(futs), 1):
+                try:
+                    passed.extend(fut.result())
+                except Exception as e:
+                    print(f"[batch error] {e}", file=sys.stderr)
+                print(f"batch {i}/{len(batches)} pass={len(passed)}", flush=True)
+        return passed
 
     t0 = time.time()
-    first = []
-    with ThreadPoolExecutor(max_workers=args.workers) as ex:
-        futs = [ex.submit(job, n, (("www.gstatic.com", 80), ("cp.cloudflare.com", 80))) for n in nodes]
-        for i, fut in enumerate(as_completed(futs), 1):
-            try:
-                node, lat = fut.result()
-            except Exception:
-                continue
-            if lat is not None:
-                first.append((node, lat))
-            if i % 100 == 0:
-                print(f"round1 {i}/{len(nodes)} pass={len(first)}")
+    targets_a = (("www.gstatic.com", 80), ("cp.cloudflare.com", 80))
+    targets_b = (("cp.cloudflare.com", 80), ("www.gstatic.com", 80))
+    first = run_round(nodes, targets_a)
     print(f"round1 pass={len(first)} time={time.time()-t0:.0f}s")
 
-    second = []
-    with ThreadPoolExecutor(max_workers=args.workers) as ex:
-        futs = [ex.submit(job, n, (("cp.cloudflare.com", 80), ("www.gstatic.com", 80))) for n, _ in first]
-        for fut in as_completed(futs):
-            try:
-                node, lat = fut.result()
-            except Exception:
-                continue
-            if lat is not None:
-                old = next(x for x in first if x[0] is node)[1]
-                second.append((node, min(old, lat)))
+    t1 = time.time()
+    second = run_round([n for n, _ in first], targets_b)
+    print(f"round2 pass={len(second)} time={time.time()-t1:.0f}s")
+
     second.sort(key=lambda x: x[1])
     result = second[: args.keep]
-    print(f"round2 pass={len(second)} kept={len(result)}")
+    print(f"kept={len(result)}")
 
     out = args.out
     os.makedirs(out, exist_ok=True)
@@ -418,7 +492,18 @@ def main():
         stats["proxies"][n["proto"]] = stats["proxies"].get(n["proto"], 0) + 1
     with open(os.path.join(out, "stats.json"), "w", encoding="utf-8") as f:
         json.dump(stats, f, indent=2, ensure_ascii=False)
+    with open(os.path.join(out, "stats.history.jsonl"), "a", encoding="utf-8", newline="\n") as f:
+        f.write(json.dumps(stats, ensure_ascii=False) + "\n")
     print(json.dumps(stats, indent=2, ensure_ascii=False))
+
+
+def load_nodes_from_text(text):
+    out = []
+    for line in text.splitlines():
+        n = parse_node(line)
+        if n:
+            out.append(n)
+    return out
 
 
 if __name__ == "__main__":
