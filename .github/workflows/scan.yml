@@ -53,10 +53,36 @@ jobs:
           GOOGLE_CX: ${{ secrets.GOOGLE_CX }}
         run: python discover_web.py
 
-      - name: Scan and filter
+      - name: Scan, filter and validate
         env:
           XRAY_BIN: xray/xray
-        run: python scan.py --sources sources.txt --limit 1500 --workers 6 --batch 10 --keep 150 --out .
+        run: python scan.py --sources sources.txt --limit 1500 --workers 6 --batch 10 --keep 40 --rounds 3 --max-latency 2000 --out .
+
+      - name: Sanity check outputs
+        run: |
+          python - <<'PY'
+          import json, re, sys
+          text = open("clash.yaml", encoding="utf-8").read()
+          head = text.split("proxy-groups:")[0]
+          blocks = re.split(r"\n  - name: ", head)[1:]
+          if not blocks:
+              sys.exit("clash.yaml has no proxies")
+          for b in blocks:
+              for pat, label in ((r"^\s+type:\s*\S+", "type"),
+                                 (r"^\s+server:\s*\S+", "server"),
+                                 (r"^\s+port:\s*\d+\s*$", "port")):
+                  if not re.search(pat, b, re.M):
+                      sys.exit("proxy block missing " + label)
+              for m in re.finditer(r"^\s+short-id:\s*(.+)$", b, re.M):
+                  v = m.group(1).strip()
+                  if not v.startswith('"'):
+                      sys.exit("unquoted short-id: " + v)
+                  v = v.strip('"')
+                  if not re.fullmatch(r"[0-9a-f]{2,16}", v) or len(v) % 2:
+                      sys.exit("invalid short-id: " + v)
+          stats = json.load(open("stats.json", encoding="utf-8"))
+          print("proxies", len(blocks), "published", stats.get("published"))
+          PY
 
       - name: Commit results
         run: |
