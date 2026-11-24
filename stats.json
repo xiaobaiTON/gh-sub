@@ -1,0 +1,14 @@
+{
+  "generated": "2026-11-24T07:44:05Z",
+  "collected": 1500,
+  "round1_pass": 98,
+  "round2_pass": 89,
+  "published": 89,
+  "proxies": {
+    "ss": 46,
+    "trojan": 8,
+    "vless": 24,
+    "vmess": 11
+  },
+  "fastest_ms": 50
+}
