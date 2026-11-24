@@ -56,7 +56,7 @@ jobs:
       - name: Scan and filter
         env:
           XRAY_BIN: xray/xray
-        run: python scan.py --sources sources.txt --limit 1500 --workers 10 --batch 20 --keep 150 --out .
+        run: python scan.py --sources sources.txt --limit 1500 --workers 6 --batch 10 --keep 150 --out .
 
       - name: Commit results
         run: |
