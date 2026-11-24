@@ -297,55 +297,69 @@ def yq(s):
     return json.dumps(str(s), ensure_ascii=False)
 
 
+def sid_ok(s):
+    if not isinstance(s, str):
+        return ""
+    t = s.strip().strip("\"'").lower()
+    if re.fullmatch(r"[0-9a-f]{2,16}", t) and len(t) % 2 == 0:
+        return t
+    return ""
+
+
 def clash_yaml(nodes):
     lines = ["mixed-port: 7890", "allow-lan: false", "mode: rule", "log-level: info", "proxies:"]
     names = []
     for i, n in enumerate(nodes, 1):
         p, e, host, port = n["proto"], n["extra"], n["host"], n["port"]
+        if e.get("type") == "raw":
+            e["type"] = "tcp"
+        if e.get("net") == "raw":
+            e["net"] = "tcp"
         name = f"{p.upper()}-{i:02d}-{host[:28]}"
         names.append(name)
         lines.append(f"  - name: {yq(name)}")
         if p == "vmess":
             net = e.get("net") or "tcp"
             lines += [f"    type: vmess", f"    server: {host}", f"    port: {port}",
-                      f"    uuid: {e.get('id')}", f"    alterId: {int(e.get('aid', 0) or 0)}",
+                      f"    uuid: {yq(e.get('id'))}", f"    alterId: {int(e.get('aid', 0) or 0)}",
                       f"    cipher: {e.get('scy') or 'auto'}",
                       f"    tls: {'true' if e.get('tls') else 'false'}"]
             if e.get("sni"):
-                lines.append(f"    servername: {e['sni']}")
+                lines.append(f"    servername: {yq(e['sni'])}")
             lines.append(f"    network: {net}")
             if net == "ws":
                 lines += ["    ws-opts:", f"      path: {yq(e.get('path') or '/')}", "      headers:",
-                          f"        Host: {e.get('host') or host}"]
+                          f"        Host: {yq(e.get('host') or host)}"]
             elif net == "grpc":
                 lines += ["    grpc-opts:", f"      grpc-service-name: {yq(e.get('path') or 'grpc')}"]
         elif p == "ss":
             lines += ["    type: ss", f"    server: {host}", f"    port: {port}",
-                      f"    cipher: {e.get('method')}", f"    password: {yq(e.get('password'))}", "    udp: true"]
+                      f"    cipher: {yq(e.get('method'))}", f"    password: {yq(e.get('password'))}", "    udp: true"]
         else:
             net = e.get("type") or "tcp"
             sec = e.get("security") or "none"
             lines += [f"    type: {p}", f"    server: {host}", f"    port: {port}",
-                      f"    uuid: {n['link'].split('://', 1)[1].split('@', 1)[0]}",
+                      f"    uuid: {yq(n['link'].split('://', 1)[1].split('@', 1)[0])}",
                       f"    network: {net}", f"    tls: {'true' if sec != 'none' else 'false'}"]
             if e.get("sni"):
-                lines.append(f"    servername: {e['sni']}")
+                lines.append(f"    servername: {yq(e['sni'])}")
             lines.append(f"    client-fingerprint: {e.get('fp') or 'chrome'}")
             if sec == "reality" and e.get("pbk"):
-                lines += ["    reality-opts:", f"      public-key: {e['pbk']}"]
-                if e.get("sid"):
-                    lines.append(f"      short-id: {e['sid']}")
+                lines += ["    reality-opts:", f"      public-key: {yq(e['pbk'])}"]
+                sid = sid_ok(e.get("sid"))
+                if sid:
+                    lines.append(f"      short-id: {yq(sid)}")
             if e.get("alpn"):
                 lines.append("    alpn:")
                 for a in e["alpn"].split(","):
                     lines.append(f"      - {yq(a)}")
             if net == "ws":
                 lines += ["    ws-opts:", f"      path: {yq(e.get('path') or '/')}", "      headers:",
-                          f"        Host: {e.get('host') or e.get('sni') or host}"]
+                          f"        Host: {yq(e.get('host') or e.get('sni') or host)}"]
             elif net == "grpc":
                 lines += ["    grpc-opts:", f"      grpc-service-name: {yq(e.get('serviceName') or 'grpc')}"]
             if e.get("flow"):
-                lines.append(f"    flow: {e['flow']}")
+                lines.append(f"    flow: {yq(e['flow'])}")
     lines += ["proxy-groups:", '  - name: "AUTO"', "    type: url-test",
               '    url: "https://www.gstatic.com/generate_204"', "    interval: 300", "    tolerance: 50",
               "    proxies:"]
