@@ -5,3 +5,4 @@
 {"generated": "2026-11-24T11:01:51Z", "collected": 1500, "round1_pass": 50, "round2_pass": 46, "round3_pass": 43, "published": 40, "proxies": {"ss": 21, "vmess": 8, "vless": 10, "trojan": 1}, "fastest_ms": 33}
 {"generated": "2026-11-24T11:21:05Z", "collected": 1500, "round1_pass": 43, "round2_pass": 40, "round3_pass": 36, "published": 36, "proxies": {"vmess": 7, "ss": 21, "vless": 7, "trojan": 1}, "fastest_ms": 122}
 {"generated": "2026-11-24T22:45:13Z", "collected": 1500, "round1_pass": 53, "round2_pass": 48, "round3_pass": 48, "published": 40, "proxies": {"ss": 24, "vless": 8, "vmess": 7, "trojan": 1}, "fastest_ms": 26}
+{"generated": "2026-11-25T09:01:08Z", "collected": 1500, "round1_pass": 47, "round2_pass": 44, "round3_pass": 42, "published": 40, "proxies": {"trojan": 3, "ss": 20, "vmess": 6, "vless": 11}, "fastest_ms": 33}

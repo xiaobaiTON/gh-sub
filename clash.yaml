@@ -3,101 +3,23 @@ allow-lan: false
 mode: rule
 log-level: info
 proxies:
-  - name: "SS-01-156.146.38.170"
+  - name: "TROJAN-01-167.88.61.193"
+    type: trojan
+    server: 167.88.61.193
+    port: 443
+    password: "0ab6c98dae3b48e8b9c4a776b6c9c19a"
+    network: tcp
+    tls: false
+    servername: "browseseniorrolesandenhanceyourcareertoday.com"
+    client-fingerprint: "chrome"
+  - name: "SS-02-173.244.56.9"
     type: ss
-    server: 156.146.38.170
+    server: 173.244.56.9
     port: 443
     cipher: "aes-128-gcm"
     password: "shadowsocks"
     udp: true
-  - name: "SS-02-23.150.152.38"
-    type: ss
-    server: 23.150.152.38
-    port: 19999
-    cipher: "aes-256-gcm"
-    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
-    udp: true
-  - name: "SS-03-37.19.198.236"
-    type: ss
-    server: 37.19.198.236
-    port: 443
-    cipher: "aes-128-gcm"
-    password: "shadowsocks"
-    udp: true
-  - name: "SS-04-51.222.12.127"
-    type: ss
-    server: 51.222.12.127
-    port: 445
-    cipher: "aes-256-gcm"
-    password: "zDNVedRFPQexG9v"
-    udp: true
-  - name: "SS-05-38.128.66.32"
-    type: ss
-    server: 38.128.66.32
-    port: 19999
-    cipher: "aes-256-gcm"
-    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
-    udp: true
-  - name: "VLESS-06-159.89.87.21"
-    type: vless
-    server: 159.89.87.21
-    port: 28190
-    uuid: "14c80e0e-f7ce-4991-94fc-99a1db4a9b1e"
-    network: tcp
-    tls: true
-    servername: "aws.amazon.com"
-    client-fingerprint: "firefox"
-    reality-opts:
-      public-key: "ZJRnFU-1s1JOnO8E9uZ7b00l1fPEh63fGRbdBANFRno"
-    flow: "xtls-rprx-vision"
-  - name: "SS-07-38.121.43.225"
-    type: ss
-    server: 38.121.43.225
-    port: 19999
-    cipher: "aes-256-gcm"
-    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
-    udp: true
-  - name: "VMESS-08-www.shopify.com"
-    type: vmess
-    server: www.shopify.com
-    port: 443
-    uuid: "6a89a215-22bf-4bd7-9642-b95b2e09583a"
-    alterId: 0
-    cipher: "auto"
-    tls: true
-    servername: "guanwang.awsno.com"
-    network: ws
-    ws-opts:
-      path: "/hls/cctv5phd.m3u8"
-      headers:
-        Host: "guanwang.awsno.com"
-  - name: "VLESS-09-169.40.42.35"
-    type: vless
-    server: 169.40.42.35
-    port: 443
-    uuid: "d65cc14c-f53f-4fe2-b262-97856601319c"
-    network: tcp
-    tls: true
-    servername: "yahoo.com"
-    client-fingerprint: "chrome"
-    reality-opts:
-      public-key: "e2RLf57Li_-MDZGE9ss1BWPgP54mqRb5PfXhW2jcVVg"
-      short-id: "c39cc7310a"
-    flow: "xtls-rprx-vision"
-  - name: "VLESS-10-193.233.89.130"
-    type: vless
-    server: 193.233.89.130
-    port: 8443
-    uuid: "7bd7c4aa-52c4-482c-bdcc-e7380fa6b5fe"
-    network: grpc
-    tls: true
-    servername: "g.play2go.gay"
-    client-fingerprint: "chrome"
-    reality-opts:
-      public-key: "xx8KWdR4HbVmvqPb0wRPAstBHGN2Uk99m7AF794_E3c"
-    grpc-opts:
-      grpc-service-name: "grpc"
-  - name: "VMESS-11-172.64.145.93"
+  - name: "VMESS-03-172.64.145.93"
     type: vmess
     server: 172.64.145.93
     port: 443
@@ -111,55 +33,21 @@ proxies:
       path: "/hls/cctv5phd.m3u8"
       headers:
         Host: "guanwang.awsno.com"
-  - name: "VLESS-12-201.24.116.192"
-    type: vless
-    server: 201.24.116.192
+  - name: "VMESS-04-www.shopify.com"
+    type: vmess
+    server: www.shopify.com
     port: 443
-    uuid: "38308ff1-5aa9-494f-a25a-0f2870d56b3e"
-    network: grpc
+    uuid: "6a89a215-22bf-4bd7-9642-b95b2e09583a"
+    alterId: 0
+    cipher: "auto"
     tls: true
-    servername: "vps3.nemnogogo.com"
-    client-fingerprint: "chrome"
-    grpc-opts:
-      grpc-service-name: "mobile.api.Event"
-  - name: "VLESS-13-vps3.nemnogogo.com"
-    type: vless
-    server: vps3.nemnogogo.com
-    port: 443
-    uuid: "38308ff1-5aa9-494f-a25a-0f2870d56b3e"
-    network: grpc
-    tls: true
-    servername: "vps3.nemnogogo.com"
-    client-fingerprint: "chrome"
-    alpn:
-      - "h2"
-    grpc-opts:
-      grpc-service-name: "mobile.api.Event"
-  - name: "VLESS-14-leviko-ru4448.shopingggg.ir"
-    type: vless
-    server: leviko-ru4448.shopingggg.ir
-    port: 443
-    uuid: "38308ff1-5aa9-494f-a25a-0f2870d56b3e"
-    network: grpc
-    tls: true
-    servername: "vps3.nemnogogo.com"
-    client-fingerprint: "chrome"
-    alpn:
-      - "h2"
-    grpc-opts:
-      grpc-service-name: "mobile.api.Event"
-  - name: "VLESS-15-201.51.12.98"
-    type: vless
-    server: 201.51.12.98
-    port: 443
-    uuid: "38308ff1-5aa9-494f-a25a-0f2870d56b3e"
-    network: grpc
-    tls: true
-    servername: "vps3.nemnogogo.com"
-    client-fingerprint: "chrome"
-    grpc-opts:
-      grpc-service-name: "mobile.api.Event"
-  - name: "VMESS-16-guanwang.awsno.com"
+    servername: "guanwang.awsno.com"
+    network: ws
+    ws-opts:
+      path: "/hls/cctv5phd.m3u8"
+      headers:
+        Host: "guanwang.awsno.com"
+  - name: "VMESS-05-guanwang.awsno.com"
     type: vmess
     server: guanwang.awsno.com
     port: 443
@@ -173,42 +61,7 @@ proxies:
       path: "/hls/cctv5phd.m3u8"
       headers:
         Host: "guanwang.awsno.com"
-  - name: "VMESS-17-188.114.99.137"
-    type: vmess
-    server: 188.114.99.137
-    port: 443
-    uuid: "6a89a215-22bf-4bd7-9642-b95b2e09583a"
-    alterId: 0
-    cipher: "auto"
-    tls: true
-    servername: "guanwang.awsno.com"
-    network: ws
-    ws-opts:
-      path: "/hls/cctv5phd.m3u8"
-      headers:
-        Host: "guanwang.awsno.com"
-  - name: "SS-18-47.85.227.36"
-    type: ss
-    server: 47.85.227.36
-    port: 443
-    cipher: "2022-blake3-chacha20-poly1305"
-    password: "3NBsnBLanPfG6i3S2GTHineswr6EeSJPb0PCeMQoGoA="
-    udp: true
-  - name: "SS-19-77.221.132.206"
-    type: ss
-    server: 77.221.132.206
-    port: 24759
-    cipher: "chacha20-ietf-poly1305"
-    password: "hCgbUnMaoAfSgvE8IKdnGu"
-    udp: true
-  - name: "SS-20-57.129.83.85"
-    type: ss
-    server: 57.129.83.85
-    port: 19999
-    cipher: "aes-256-gcm"
-    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
-    udp: true
-  - name: "VMESS-21-172.67.190.164"
+  - name: "VMESS-06-172.67.190.164"
     type: vmess
     server: 172.67.190.164
     port: 443
@@ -222,58 +75,216 @@ proxies:
       path: "/hls/cctv5phd.m3u8"
       headers:
         Host: "guanwang.awsno.com"
-  - name: "SS-22-82.38.31.199"
+  - name: "VMESS-07-188.114.99.137"
+    type: vmess
+    server: 188.114.99.137
+    port: 443
+    uuid: "6a89a215-22bf-4bd7-9642-b95b2e09583a"
+    alterId: 0
+    cipher: "auto"
+    tls: true
+    servername: "guanwang.awsno.com"
+    network: ws
+    ws-opts:
+      path: "/hls/cctv5phd.m3u8"
+      headers:
+        Host: "guanwang.awsno.com"
+  - name: "SS-08-37.19.198.236"
     type: ss
-    server: 82.38.31.199
-    port: 8080
-    cipher: "chacha20-ietf-poly1305"
-    password: "k1dBOmOB4oqi7Ump37a1bQ"
+    server: 37.19.198.236
+    port: 443
+    cipher: "aes-128-gcm"
+    password: "shadowsocks"
     udp: true
-  - name: "SS-23-82.38.31.35"
+  - name: "SS-09-172.111.38.72"
     type: ss
-    server: 82.38.31.35
+    server: 172.111.38.72
+    port: 19999
+    cipher: "aes-256-gcm"
+    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
+    udp: true
+  - name: "SS-10-38.22.17.129"
+    type: ss
+    server: 38.22.17.129
+    port: 19999
+    cipher: "aes-256-gcm"
+    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
+    udp: true
+  - name: "SS-11-38.121.43.231"
+    type: ss
+    server: 38.121.43.231
+    port: 19999
+    cipher: "aes-256-gcm"
+    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
+    udp: true
+  - name: "VLESS-12-185.95.231.156"
+    type: vless
+    server: 185.95.231.156
+    port: 443
+    uuid: "1f8cf47a-b66a-4916-979f-26edfcf44eea"
+    network: tcp
+    tls: true
+    servername: "www.apple.com"
+    client-fingerprint: "chrome"
+    reality-opts:
+      public-key: "8eXftARun6KH38UZhuqIfPR1VF2DLS9RMBZEnF5k6To"
+      short-id: "a3a578ab"
+    flow: "xtls-rprx-vision"
+  - name: "SS-13-149.22.87.240"
+    type: ss
+    server: 149.22.87.240
+    port: 443
+    cipher: "aes-128-gcm"
+    password: "shadowsocks"
+    udp: true
+  - name: "VLESS-14-169.40.42.163"
+    type: vless
+    server: 169.40.42.163
+    port: 443
+    uuid: "d65cc14c-f53f-4fe2-b262-97856601319c"
+    network: tcp
+    tls: true
+    servername: "yahoo.com"
+    client-fingerprint: "chrome"
+    reality-opts:
+      public-key: "e2RLf57Li_-MDZGE9ss1BWPgP54mqRb5PfXhW2jcVVg"
+      short-id: "c39cc7310a"
+    flow: "xtls-rprx-vision"
+  - name: "VLESS-15-169.40.42.90"
+    type: vless
+    server: 169.40.42.90
+    port: 443
+    uuid: "d65cc14c-f53f-4fe2-b262-97856601319c"
+    network: tcp
+    tls: true
+    servername: "yahoo.com"
+    client-fingerprint: "ios"
+    reality-opts:
+      public-key: "e2RLf57Li_-MDZGE9ss1BWPgP54mqRb5PfXhW2jcVVg"
+      short-id: "c39cc7310a"
+    flow: "xtls-rprx-vision"
+  - name: "VLESS-16-193.233.89.130"
+    type: vless
+    server: 193.233.89.130
+    port: 8443
+    uuid: "7bd7c4aa-52c4-482c-bdcc-e7380fa6b5fe"
+    network: grpc
+    tls: true
+    servername: "g.play2go.gay"
+    client-fingerprint: "chrome"
+    reality-opts:
+      public-key: "xx8KWdR4HbVmvqPb0wRPAstBHGN2Uk99m7AF794_E3c"
+    grpc-opts:
+      grpc-service-name: "grpc"
+  - name: "VLESS-17-leviko-ru4448.shopingggg.ir"
+    type: vless
+    server: leviko-ru4448.shopingggg.ir
+    port: 443
+    uuid: "38308ff1-5aa9-494f-a25a-0f2870d56b3e"
+    network: grpc
+    tls: true
+    servername: "vps3.nemnogogo.com"
+    client-fingerprint: "chrome"
+    alpn:
+      - "h2"
+    grpc-opts:
+      grpc-service-name: "mobile.api.Event"
+  - name: "VLESS-18-vps3.nemnogogo.com"
+    type: vless
+    server: vps3.nemnogogo.com
+    port: 443
+    uuid: "38308ff1-5aa9-494f-a25a-0f2870d56b3e"
+    network: grpc
+    tls: true
+    servername: "vps3.nemnogogo.com"
+    client-fingerprint: "chrome"
+    alpn:
+      - "h2"
+    grpc-opts:
+      grpc-service-name: "mobile.api.Event"
+  - name: "VLESS-19-201.51.12.98"
+    type: vless
+    server: 201.51.12.98
+    port: 443
+    uuid: "38308ff1-5aa9-494f-a25a-0f2870d56b3e"
+    network: grpc
+    tls: true
+    servername: "vps3.nemnogogo.com"
+    client-fingerprint: "chrome"
+    grpc-opts:
+      grpc-service-name: "mobile.api.Event"
+  - name: "VLESS-20-201.24.116.192"
+    type: vless
+    server: 201.24.116.192
+    port: 443
+    uuid: "38308ff1-5aa9-494f-a25a-0f2870d56b3e"
+    network: grpc
+    tls: true
+    servername: "vps3.nemnogogo.com"
+    client-fingerprint: "chrome"
+    grpc-opts:
+      grpc-service-name: "mobile.api.Event"
+  - name: "SS-21-198.244.202.215"
+    type: ss
+    server: 198.244.202.215
+    port: 19999
+    cipher: "aes-256-gcm"
+    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
+    udp: true
+  - name: "SS-22-151.241.19.29"
+    type: ss
+    server: 151.241.19.29
+    port: 19999
+    cipher: "aes-256-gcm"
+    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
+    udp: true
+  - name: "TROJAN-23-216.152.155.23"
+    type: trojan
+    server: 216.152.155.23
+    port: 443
+    password: "0ab6c98dae3b48e8b9c4a776b6c9c19a"
+    network: tcp
+    tls: false
+    servername: "courses.nextjobopportunityandclaimyouridealrole.com"
+    client-fingerprint: "chrome"
+  - name: "SS-24-23.162.152.22"
+    type: ss
+    server: 23.162.152.22
+    port: 19999
+    cipher: "aes-256-gcm"
+    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
+    udp: true
+  - name: "SS-25-82.38.31.156"
+    type: ss
+    server: 82.38.31.156
     port: 8080
     cipher: "chacha20-ietf-poly1305"
     password: "oZIoA69Q8yhcQV8ka3Pa3A"
     udp: true
-  - name: "SS-24-82.38.31.187"
-    type: ss
-    server: 82.38.31.187
-    port: 8080
-    cipher: "chacha20-ietf-poly1305"
-    password: "k1dBOmOB4oqi7Ump37a1bQ"
-    udp: true
-  - name: "SS-25-202.50.253.54"
-    type: ss
-    server: 202.50.253.54
-    port: 19999
-    cipher: "aes-256-gcm"
-    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
-    udp: true
-  - name: "SS-26-202.50.253.63"
-    type: ss
-    server: 202.50.253.63
-    port: 19999
-    cipher: "aes-256-gcm"
-    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
-    udp: true
-  - name: "SS-27-202.50.253.81"
-    type: ss
-    server: 202.50.253.81
-    port: 19999
-    cipher: "aes-256-gcm"
-    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
-    udp: true
-  - name: "SS-28-202.50.253.90"
+  - name: "SS-26-202.50.253.90"
     type: ss
     server: 202.50.253.90
     port: 19999
     cipher: "aes-256-gcm"
     password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
     udp: true
-  - name: "SS-29-202.50.253.27"
+  - name: "SS-27-202.50.253.27"
     type: ss
     server: 202.50.253.27
+    port: 19999
+    cipher: "aes-256-gcm"
+    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
+    udp: true
+  - name: "SS-28-202.50.253.45"
+    type: ss
+    server: 202.50.253.45
+    port: 19999
+    cipher: "aes-256-gcm"
+    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
+    udp: true
+  - name: "SS-29-202.50.253.99"
+    type: ss
+    server: 202.50.253.99
     port: 19999
     cipher: "aes-256-gcm"
     password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
@@ -285,89 +296,102 @@ proxies:
     cipher: "aes-256-gcm"
     password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
     udp: true
-  - name: "SS-31-202.50.253.18"
-    type: ss
-    server: 202.50.253.18
-    port: 19999
-    cipher: "aes-256-gcm"
-    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
-    udp: true
-  - name: "SS-32-202.50.253.99"
-    type: ss
-    server: 202.50.253.99
-    port: 19999
-    cipher: "aes-256-gcm"
-    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
-    udp: true
-  - name: "SS-33-167.17.64.175"
-    type: ss
-    server: 167.17.64.175
-    port: 19999
-    cipher: "aes-256-gcm"
-    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
-    udp: true
-  - name: "SS-34-202.50.253.45"
-    type: ss
-    server: 202.50.253.45
-    port: 19999
-    cipher: "aes-256-gcm"
-    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
-    udp: true
-  - name: "SS-35-202.50.253.72"
+  - name: "SS-31-202.50.253.72"
     type: ss
     server: 202.50.253.72
     port: 19999
     cipher: "aes-256-gcm"
     password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
     udp: true
-  - name: "VMESS-36-140.238.2.250"
-    type: vmess
-    server: 140.238.2.250
-    port: 443
-    uuid: "41a7089a-040b-4538-8b8d-010902405bde"
-    alterId: 0
-    cipher: "auto"
-    tls: false
-    network: tcp
-  - name: "SS-37-185.213.23.63"
+  - name: "SS-32-202.50.253.81"
     type: ss
-    server: 185.213.23.63
-    port: 990
-    cipher: "chacha20-ietf-poly1305"
-    password: "ARgvGZywA+gacgGV26Bvmu05+wZmRW/j+AdU+Z8Bt44="
+    server: 202.50.253.81
+    port: 19999
+    cipher: "aes-256-gcm"
+    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
     udp: true
-  - name: "VLESS-38-155.248.175.201"
+  - name: "SS-33-193.29.139.132"
+    type: ss
+    server: 193.29.139.132
+    port: 8080
+    cipher: "chacha20-ietf-poly1305"
+    password: "k1dBOmOB4oqi7Ump37a1bQ"
+    udp: true
+  - name: "SS-34-202.50.253.63"
+    type: ss
+    server: 202.50.253.63
+    port: 19999
+    cipher: "aes-256-gcm"
+    password: "ZRpgaBeGxtENIXgvhpkZBKz9GnWRS2dYcx9O+a2iwN4="
+    udp: true
+  - name: "VLESS-35-172.67.139.189"
     type: vless
-    server: 155.248.175.201
-    port: 23169
-    uuid: "7318caa1-93d1-4a9d-c481-504599902700"
+    server: 172.67.139.189
+    port: 443
+    uuid: "364D2D52-E61E-4E52-80EC-2BC6BDF15349"
+    network: ws
+    tls: true
+    servername: "fr-free.fastestrelay.com"
+    client-fingerprint: "qq"
+    ws-opts:
+      path: "/700gvl"
+      headers:
+        Host: "fr-free.fastestrelay.com"
+  - name: "SS-36-57.131.27.21"
+    type: ss
+    server: 57.131.27.21
+    port: 8388
+    cipher: "aes-256-gcm"
+    password: "itzvpn@321"
+    udp: true
+  - name: "VLESS-37-51.158.206.80"
+    type: vless
+    server: 51.158.206.80
+    port: 23576
+    uuid: "48ff2b70-e180-582f-8866-d9a2edeed5f5"
     network: tcp
     tls: true
-    servername: "djj.zjlo.top"
-    client-fingerprint: "firefox"
+    servername: "fuck.rkn"
+    client-fingerprint: "chrome"
+    reality-opts:
+      public-key: "1y5h2FGWKXTJ9xLPCqPo6Mw7RxoZzh6fGkEQKNxpZ3s"
+      short-id: "01"
     flow: "xtls-rprx-vision"
-  - name: "TROJAN-39-216.152.156.49"
+  - name: "TROJAN-38-170.101.101.211"
     type: trojan
-    server: 216.152.156.49
+    server: 170.101.101.211
     port: 443
     password: "0ab6c98dae3b48e8b9c4a776b6c9c19a"
     network: tcp
     tls: false
-    servername: "cdn.healthcarejobshubenhancemedicalprofessionalskillstoday.com"
+    servername: "api.explorecreativejobsandenhanceyourcareerportfolio.com"
     client-fingerprint: "chrome"
-  - name: "VMESS-40-168.110.63.247"
+  - name: "VLESS-39-82.118.19.153"
+    type: vless
+    server: 82.118.19.153
+    port: 443
+    uuid: "adcaa148-7c66-4282-a81a-99ec8afa029d"
+    network: tcp
+    tls: true
+    servername: "www.cloudflare.com"
+    client-fingerprint: "chrome"
+    reality-opts:
+      public-key: "Tiuy8om5Lk0pWL95-8LaFFTwH0vbURVMoOkaW9xGaiE"
+      short-id: "670ed9f350bd8ee0"
+    flow: "xtls-rprx-vision"
+  - name: "VMESS-40-156.245.232.239"
     type: vmess
-    server: 168.110.63.247
-    port: 8081
-    uuid: "c3bde296-8e44-4b8c-a325-577d5b3cc7c8"
+    server: 156.245.232.239
+    port: 35043
+    uuid: "b15e481d-17e4-41a8-84c2-23d4f0514d9a"
     alterId: 0
     cipher: "auto"
     tls: false
     network: ws
     ws-opts:
-      path: "/vless"
+      path: "/"
       headers:
-        Host: "168.110.63.247"
+        Host: "156.245.232.239"
 proxy-groups:
   - name: "AUTO"
     type: url-test
@@ -375,56 +399,56 @@ proxy-groups:
     interval: 300
     tolerance: 50
     proxies:
-      - "SS-01-156.146.38.170"
-      - "SS-02-23.150.152.38"
-      - "SS-03-37.19.198.236"
-      - "SS-04-51.222.12.127"
-      - "SS-05-38.128.66.32"
-      - "VLESS-06-159.89.87.21"
-      - "SS-07-38.121.43.225"
-      - "VMESS-08-www.shopify.com"
-      - "VLESS-09-169.40.42.35"
-      - "VLESS-10-193.233.89.130"
-      - "VMESS-11-172.64.145.93"
-      - "VLESS-12-201.24.116.192"
-      - "VLESS-13-vps3.nemnogogo.com"
-      - "VLESS-14-leviko-ru4448.shopingggg.ir"
-      - "VLESS-15-201.51.12.98"
-      - "VMESS-16-guanwang.awsno.com"
-      - "VMESS-17-188.114.99.137"
-      - "SS-18-47.85.227.36"
-      - "SS-19-77.221.132.206"
-      - "SS-20-57.129.83.85"
-      - "VMESS-21-172.67.190.164"
-      - "SS-22-82.38.31.199"
-      - "SS-23-82.38.31.35"
-      - "SS-24-82.38.31.187"
-      - "SS-25-202.50.253.54"
-      - "SS-26-202.50.253.63"
-      - "SS-27-202.50.253.81"
-      - "SS-28-202.50.253.90"
-      - "SS-29-202.50.253.27"
+      - "TROJAN-01-167.88.61.193"
+      - "SS-02-173.244.56.9"
+      - "VMESS-03-172.64.145.93"
+      - "VMESS-04-www.shopify.com"
+      - "VMESS-05-guanwang.awsno.com"
+      - "VMESS-06-172.67.190.164"
+      - "VMESS-07-188.114.99.137"
+      - "SS-08-37.19.198.236"
+      - "SS-09-172.111.38.72"
+      - "SS-10-38.22.17.129"
+      - "SS-11-38.121.43.231"
+      - "VLESS-12-185.95.231.156"
+      - "SS-13-149.22.87.240"
+      - "VLESS-14-169.40.42.163"
+      - "VLESS-15-169.40.42.90"
+      - "VLESS-16-193.233.89.130"
+      - "VLESS-17-leviko-ru4448.shopingggg.ir"
+      - "VLESS-18-vps3.nemnogogo.com"
+      - "VLESS-19-201.51.12.98"
+      - "VLESS-20-201.24.116.192"
+      - "SS-21-198.244.202.215"
+      - "SS-22-151.241.19.29"
+      - "TROJAN-23-216.152.155.23"
+      - "SS-24-23.162.152.22"
+      - "SS-25-82.38.31.156"
+      - "SS-26-202.50.253.90"
+      - "SS-27-202.50.253.27"
+      - "SS-28-202.50.253.45"
+      - "SS-29-202.50.253.99"
       - "SS-30-202.50.253.36"
-      - "SS-31-202.50.253.18"
-      - "SS-32-202.50.253.99"
-      - "SS-33-167.17.64.175"
-      - "SS-34-202.50.253.45"
-      - "SS-35-202.50.253.72"
-      - "VMESS-36-140.238.2.250"
-      - "SS-37-185.213.23.63"
-      - "VLESS-38-155.248.175.201"
-      - "TROJAN-39-216.152.156.49"
-      - "VMESS-40-168.110.63.247"
+      - "SS-31-202.50.253.72"
+      - "SS-32-202.50.253.81"
+      - "SS-33-193.29.139.132"
+      - "SS-34-202.50.253.63"
+      - "VLESS-35-172.67.139.189"
+      - "SS-36-57.131.27.21"
+      - "VLESS-37-51.158.206.80"
+      - "TROJAN-38-170.101.101.211"
+      - "VLESS-39-82.118.19.153"
+      - "VMESS-40-156.245.232.239"
   - name: "FALLBACK"
     type: fallback
     url: "https://www.gstatic.com/generate_204"
     interval: 300
     proxies:
       - "AUTO"
-      - "SS-01-156.146.38.170"
-      - "SS-02-23.150.152.38"
-      - "SS-03-37.19.198.236"
-      - "SS-04-51.222.12.127"
-      - "SS-05-38.128.66.32"
+      - "TROJAN-01-167.88.61.193"
+      - "SS-02-173.244.56.9"
+      - "VMESS-03-172.64.145.93"
+      - "VMESS-04-www.shopify.com"
+      - "VMESS-05-guanwang.awsno.com"
 rules:
   - MATCH,FALLBACK
