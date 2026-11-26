@@ -10,36 +10,39 @@
 <text x="38" y="58.5" fill="#8a939f" font-size="9" text-anchor="end">45</text>
 <line x1="44" y1="18.0" x2="446" y2="18.0" stroke="#2a3038" stroke-width="1"/>
 <text x="38" y="21.5" fill="#8a939f" font-size="9" text-anchor="end">60</text>
-<polyline points="44.0,114.2 94.2,59.9 144.5,47.6 194.8,42.7 245.0,42.7 295.2,59.9 345.5,35.3 395.8,50.1 446.0,45.1" fill="none" stroke="#d9973a" stroke-width="2"/>
+<polyline points="44.0,114.2 88.7,59.9 133.3,47.6 178.0,42.7 222.7,42.7 267.3,59.9 312.0,35.3 356.7,50.1 401.3,45.1 446.0,67.3" fill="none" stroke="#d9973a" stroke-width="2"/>
 <circle cx="44.0" cy="114.2" r="2.5" fill="#d9973a"/>
-<circle cx="94.2" cy="59.9" r="2.5" fill="#d9973a"/>
-<circle cx="144.5" cy="47.6" r="2.5" fill="#d9973a"/>
-<circle cx="194.8" cy="42.7" r="2.5" fill="#d9973a"/>
-<circle cx="245.0" cy="42.7" r="2.5" fill="#d9973a"/>
-<circle cx="295.2" cy="59.9" r="2.5" fill="#d9973a"/>
-<circle cx="345.5" cy="35.3" r="2.5" fill="#d9973a"/>
-<circle cx="395.8" cy="50.1" r="2.5" fill="#d9973a"/>
-<circle cx="446.0" cy="45.1" r="2.5" fill="#d9973a"/>
-<polyline points="44.0,116.7 94.2,72.3 144.5,52.5 194.8,55.0 245.0,52.5 295.2,67.3 345.5,47.6 395.8,57.5 446.0,50.1" fill="none" stroke="#7aa2c8" stroke-width="2"/>
+<circle cx="88.7" cy="59.9" r="2.5" fill="#d9973a"/>
+<circle cx="133.3" cy="47.6" r="2.5" fill="#d9973a"/>
+<circle cx="178.0" cy="42.7" r="2.5" fill="#d9973a"/>
+<circle cx="222.7" cy="42.7" r="2.5" fill="#d9973a"/>
+<circle cx="267.3" cy="59.9" r="2.5" fill="#d9973a"/>
+<circle cx="312.0" cy="35.3" r="2.5" fill="#d9973a"/>
+<circle cx="356.7" cy="50.1" r="2.5" fill="#d9973a"/>
+<circle cx="401.3" cy="45.1" r="2.5" fill="#d9973a"/>
+<circle cx="446.0" cy="67.3" r="2.5" fill="#d9973a"/>
+<polyline points="44.0,116.7 88.7,72.3 133.3,52.5 178.0,55.0 222.7,52.5 267.3,67.3 312.0,47.6 356.7,57.5 401.3,50.1 446.0,79.7" fill="none" stroke="#7aa2c8" stroke-width="2"/>
 <circle cx="44.0" cy="116.7" r="2.5" fill="#7aa2c8"/>
-<circle cx="94.2" cy="72.3" r="2.5" fill="#7aa2c8"/>
-<circle cx="144.5" cy="52.5" r="2.5" fill="#7aa2c8"/>
-<circle cx="194.8" cy="55.0" r="2.5" fill="#7aa2c8"/>
-<circle cx="245.0" cy="52.5" r="2.5" fill="#7aa2c8"/>
-<circle cx="295.2" cy="67.3" r="2.5" fill="#7aa2c8"/>
-<circle cx="345.5" cy="47.6" r="2.5" fill="#7aa2c8"/>
-<circle cx="395.8" cy="57.5" r="2.5" fill="#7aa2c8"/>
-<circle cx="446.0" cy="50.1" r="2.5" fill="#7aa2c8"/>
-<polyline points="44.0,116.7 94.2,72.3 144.5,52.5 194.8,55.0 245.0,67.3 295.2,77.2 345.5,67.3 395.8,67.3 446.0,67.3" fill="none" stroke="#3f9f6a" stroke-width="2"/>
+<circle cx="88.7" cy="72.3" r="2.5" fill="#7aa2c8"/>
+<circle cx="133.3" cy="52.5" r="2.5" fill="#7aa2c8"/>
+<circle cx="178.0" cy="55.0" r="2.5" fill="#7aa2c8"/>
+<circle cx="222.7" cy="52.5" r="2.5" fill="#7aa2c8"/>
+<circle cx="267.3" cy="67.3" r="2.5" fill="#7aa2c8"/>
+<circle cx="312.0" cy="47.6" r="2.5" fill="#7aa2c8"/>
+<circle cx="356.7" cy="57.5" r="2.5" fill="#7aa2c8"/>
+<circle cx="401.3" cy="50.1" r="2.5" fill="#7aa2c8"/>
+<circle cx="446.0" cy="79.7" r="2.5" fill="#7aa2c8"/>
+<polyline points="44.0,116.7 88.7,72.3 133.3,52.5 178.0,55.0 222.7,67.3 267.3,77.2 312.0,67.3 356.7,67.3 401.3,67.3 446.0,82.1" fill="none" stroke="#3f9f6a" stroke-width="2"/>
 <circle cx="44.0" cy="116.7" r="2.5" fill="#3f9f6a"/>
-<circle cx="94.2" cy="72.3" r="2.5" fill="#3f9f6a"/>
-<circle cx="144.5" cy="52.5" r="2.5" fill="#3f9f6a"/>
-<circle cx="194.8" cy="55.0" r="2.5" fill="#3f9f6a"/>
-<circle cx="245.0" cy="67.3" r="2.5" fill="#3f9f6a"/>
-<circle cx="295.2" cy="77.2" r="2.5" fill="#3f9f6a"/>
-<circle cx="345.5" cy="67.3" r="2.5" fill="#3f9f6a"/>
-<circle cx="395.8" cy="67.3" r="2.5" fill="#3f9f6a"/>
-<circle cx="446.0" cy="67.3" r="2.5" fill="#3f9f6a"/>
+<circle cx="88.7" cy="72.3" r="2.5" fill="#3f9f6a"/>
+<circle cx="133.3" cy="52.5" r="2.5" fill="#3f9f6a"/>
+<circle cx="178.0" cy="55.0" r="2.5" fill="#3f9f6a"/>
+<circle cx="222.7" cy="67.3" r="2.5" fill="#3f9f6a"/>
+<circle cx="267.3" cy="77.2" r="2.5" fill="#3f9f6a"/>
+<circle cx="312.0" cy="67.3" r="2.5" fill="#3f9f6a"/>
+<circle cx="356.7" cy="67.3" r="2.5" fill="#3f9f6a"/>
+<circle cx="401.3" cy="67.3" r="2.5" fill="#3f9f6a"/>
+<circle cx="446.0" cy="82.1" r="2.5" fill="#3f9f6a"/>
 <rect x="44" y="6" width="8" height="8" fill="#d9973a"/>
 <text x="55" y="13" fill="#c7cdd4" font-size="9">round1</text>
 <rect x="126" y="6" width="8" height="8" fill="#7aa2c8"/>
