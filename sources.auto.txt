@@ -2,6 +2,10 @@ https://raw.githubusercontent.com/grisha-seleznev/free-vless-keys-russia/HEAD/su
 https://raw.githubusercontent.com/Andrejewild/hiddify-singbox-configs-ru/HEAD/sub.txt
 https://raw.githubusercontent.com/Andrejewild/happ-v2rayng-configs/HEAD/sub.txt
 https://raw.githubusercontent.com/Pawdroid/Free-servers/HEAD/sub
-https://raw.githubusercontent.com/bushilian/bushilian/HEAD/sub
 https://raw.githubusercontent.com/V2HUBIR/V2HUBIR-Free-V2Ray-Configs-free-Sub/HEAD/sub.txt
-https://raw.githubusercontent.com/guhaoxin123/dsh-vpn/HEAD/clash.yaml
+https://raw.githubusercontent.com/zhuhaiuk/free-nodes/HEAD/nodes.txt
+https://raw.githubusercontent.com/zhuhaiuk/free-nodes/HEAD/clash_config.yaml
+https://raw.githubusercontent.com/bushilian/bushilian/HEAD/sub
+https://raw.githubusercontent.com/longyang1233/free-nodes-sub/HEAD/clash.yaml
+https://raw.githubusercontent.com/haiwanai/free-nodes/HEAD/sub.txt
+https://raw.githubusercontent.com/hamzawih0/zorVPN/HEAD/clash.yaml
