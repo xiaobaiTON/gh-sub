@@ -1,14 +1,14 @@
 {
-  "generated": "2026-11-27T21:35:01Z",
+  "generated": "2026-11-28T08:15:55Z",
   "collected": 1500,
-  "round1_pass": 43,
-  "round2_pass": 42,
-  "round3_pass": 42,
-  "published": 40,
+  "round1_pass": 49,
+  "round2_pass": 45,
+  "round3_pass": 39,
+  "published": 39,
   "proxies": {
-    "ss": 21,
-    "vless": 14,
-    "vmess": 5
+    "vless": 9,
+    "ss": 22,
+    "vmess": 8
   },
-  "fastest_ms": 121
+  "fastest_ms": 48
 }
